@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vue Practice</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+  <div id='app' v-cloak>
+
+
+<!-- Number Counter-->
+
+
+    <h1>{{count}}</h1>
+
+
+    <button @click="reduceCounter" type="button" class="btn btn-primary">-</button>
+    <!--
+    v-on:click == @click
+    -->
+    <button v-on:click="increaseCounter" type="button" class="btn btn-primary">+</button>
+    <!--
+    This is an example of a v-if statement
+
+    <p v-if="count%2 === 0 ">The current count is even!</p>
+    <p v-else>The current count is odd!</p>
+
+    To use a computed property in a v-if do this...
+    -->
+    <p v-if="isEvenNumber">The current count is even!</p>
+    <p v-else>The current count is odd!</p>
+
+
+<!-- Currency Converter-->
+
+
+    <div class="container  mt-5">
+        <div class="row">
+          <div class ="col-md-6">
+            <label>From</label>
+            <!--
+            To update the from data property, you will need to use a v-model.
+             v-model is 2-way binding, which means a data property can be updated by both the user and by a function.
+             Since we are v-modeling the select tag, the option that we select will have it's value sent the the
+             v-modeled data type.
+            -->
+              <select v-model= "from" name="" id="" class="form-control">
+                <!--
+                To include each element in our currencies array in our options,
+                we will need to use v-for. This will act like a foreach loop
+                and it will loop through each element in the array and currencies.
+                foreach currency in our computed properties array formattedCurrencies
+              -->
+                <option v-bind:value="currency.id" v-for="currency in formattedCurrencies"> {{currency.currencyName}}</option>
+                <!--
+                To display the listing, you will need to put it in the format of  arrayitem.json-name
+                Since we are v-modeling the select tag, the option that we select will have it's value sent the
+                v-modeled data type.
+                To get value from each option you will need to bind it to the option tag:
+                v-bind:value="arrayitem.JSONvalue"
+                This is so that value attribute will know that arrayitem. JSONvalue is an expression and not a string.
+                -->
+                </select>
+            </div>
+            <div class ="col-md-6">
+              <label>To</label>
+              <!--
+              To update the to data property, you will need to use a v-model.
+               v-model is 2-way binding, which means a data property can be updated by both the user and by a function.
+               Since we are v-modeling the select tag, the option that we select will have it's value sent the the
+               v-modeled data type.
+              -->
+                <select v-model= "to" name="" id="" class="form-control">
+
+                  <option v-bind:value="currency.id" v-for="currency in formattedCurrencies"> {{currency.currencyName}}</option>
+
+                  </select>
+              </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 offset-md-3">
+            <!--
+            To update the amount data property, you will need to use a v-model.
+             v-model is 2-way binding, which means a data property can be updated by both the user and by a function.
+            -->
+            <input v-model="amount" type="text" placeholder="Amount" class="form-control mt-5">
+
+            <div class="text-center">
+              <!--
+              You can assign computed properties to attributes using v-bind
+              -->
+              <button v-bind:disabled="disabled" v-on:click="convertCurrency" class="btn btn-lg btn-primary mt-5">
+                  {{loading? "Converting ... ": "Convert"}}
+              </button>
+            </div>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <h1 class="text-center display-2 mt-5">{{calculateResult}}</h1>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Components  -->
+
+  <div id="componentApp" v-cloak>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <!--
+          This is a card component.
+          It can be duplicated multiple times.
+        -->
+
+          <card title="Vuejs for beginners" content = "Lorem basic text"></card>
+          <card title="New Laravel course" content="Some lorem content"></card>
+
+
+          <!--To change the content of each component, you must first create a prop
+        property for your vuee instance. You will need to create an array where each item
+      represents an attribute -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Blog Post Articles -->
+<!--
+  To add multiple article entries you must first:
+  1. Create article objects in an array in the data properties.
+  2. Add a v-for attribute if item in items.
+  3. v-bind the prop attributes associated with the array of objects.
+ -->
+<div id="property" class="mt-5">
+      <card v-for="article in articles" v-bind:key= "article.id" v-bind:title="article.title" v-bind:content = "article.content"></card>
+      <div class="mt-5">
+        <!--How children-to-parent-communication -->
+        <!--
+        How to emit
+        1.Add a function in the component's method and have it called in the template.
+        2.In the function write this.$emit('descriptive-item')
+        3.In the component's tag write v-on:descriptive-item="parentFunction()"
+        4.Go to the parent's vue instance in the method and add the parentFunction()
+        -->
+        <!--
+        How to identify idividual post article
+        1.Create a function in the vue component that will be called in the template
+        2.Add the arguement to this.$emit('descriptive-item', "this.prop"). The second argument identifies a specific prop.
+        3.Insert $event into the parentFunction($event) in the component's tag
+        4.Pass 'event' into the parameter for the parentFunction in the parent's vue instance
+        -->
+        <card_3 v-on:delete-article="removeArticle($event)" v-for="article in articles" v-bind:key= "article.id" v-bind:title="article.title" v-bind:content = "article.content"></card_3>
+      </div>
+</div>
+  <!--
+  <footer id= "footer">
+     To get the current year
+    <p>copyright {{date.getFullYear()}}</p>
+  </footer>
+  -->
+  <!--
+vue.js cdn
+Bootstrap javascript/jquery cdn
+axios cdn
+-->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
